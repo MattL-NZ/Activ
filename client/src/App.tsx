@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
 import './App.css';
+import axios from 'axios'
+import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
+import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon/Icon';
+import 'semantic-ui-css/semantic.min.css'
+import List from 'semantic-ui-react/dist/commonjs/elements/List/List';
 
 class App extends Component {
   // When the app first loads, the state is empty
@@ -10,22 +14,26 @@ class App extends Component {
 
   // We then set the state to an array of two objects
   componentDidMount() {
-    this.setState({
-      values: [{id: 1, name: 'Value 101'}, {id: 2, name: 'Value 102'}]
-    })
+    axios.get("http://localhost:5000/api/values").then((response) => {
+      console.log(response);
+      this.setState({
+        values: response.data
+      })
+    });
   }
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <ul>
-            {this.state.values.map((value: any) => (
-              <li>{value.name}</li>
-            ))}
-          </ul>
-        </header>
+      <div>
+        <Header as='h2'>
+          <Icon name='users' />
+          <Header.Content>Reactivities</Header.Content>
+        </Header>
+        <List>
+          {this.state.values.map((value: any) => (
+            <List.Item key={value.id}>{value.name}</List.Item>
+          ))}
+        </List>
       </div>
     );
   }
